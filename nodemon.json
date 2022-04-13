@@ -1,0 +1,10 @@
+{
+  "legacyWatch": true,
+  "watch": [
+    "."
+  ],
+  "ext": "go",
+  "ignore": [],
+  "signal": "SIGTERM",
+  "exec": "go run main.go"
+}

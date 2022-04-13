@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -21,7 +20,9 @@ func main() {
 	app.Use(compress.New())
 	app.Use(recover.New())
 	app.Use(requestid.New())
-	app.Use(logger.New(logger.Config{}))
+	app.Use(logger.New(logger.Config{
+		Format: "[${time}] ${locals:requestid} ${status} - ${latency} ${method} ${path}\n",
+	}))
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
@@ -37,13 +38,13 @@ func main() {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGUSR2) // When an interrupt or termination signal is sent, notify the channel
 
 	_ = <-c // This blocks the main thread until an interrupt is received
-	fmt.Println("Gracefully shutting down...")
+	log.Println("Gracefully shutting down...")
 	_ = app.Shutdown()
 
-	fmt.Println("Running cleanup tasks...")
+	log.Println("Running cleanup tasks...")
 
 	// Your cleanup tasks go here e.g.
 	// db.Close()
 	// redisConn.Close()
-	fmt.Println("Fiber was successful shutdown.")
+	log.Println("Fiber was successful shutdown.")
 }
