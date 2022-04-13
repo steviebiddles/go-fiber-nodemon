@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 	"time"
 )
@@ -26,6 +27,17 @@ func main() {
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
+	})
+
+	app.Get("/os", func(c *fiber.Ctx) error {
+		myOS, myArch := runtime.GOOS, runtime.GOARCH
+		inContainer := "inside"
+		if _, err := os.Lstat("/.dockerenv"); err != nil && os.IsNotExist(err) {
+			inContainer = "outside"
+		}
+
+		str := "I'm running " + inContainer + " a container.\n" + "I'm running on " + myOS + "/" + myArch + "."
+		return c.SendString(str)
 	})
 
 	go func() {
