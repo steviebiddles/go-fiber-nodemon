@@ -22,6 +22,8 @@ COPY go.sum .
 RUN go mod download \
     && go mod verify
 
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+
 # Install nodemon
 RUN apk add --update nodejs npm \
     && apk add --update npm
@@ -31,5 +33,6 @@ ENV PATH /app/node_modules/.bin:$PATH
 RUN npm install nodemon -g --loglevel notice
 
 EXPOSE 8080
+EXPOSE 2345
 
 CMD [ "nodemon", "--config", "nodemon.json" ]

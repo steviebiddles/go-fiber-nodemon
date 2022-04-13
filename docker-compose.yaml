@@ -6,7 +6,12 @@ services:
     build:
       context: .
       target: dev
+    security_opt:
+      - "seccomp:unconfined"
+    cap_add:
+      - SYS_PTRACE
     volumes:
       - .:/app:rw,delegated
     ports:
       - "8080:8080"
+      - "2345:2345"
